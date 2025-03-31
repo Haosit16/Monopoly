@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 063d3ae895bf4a142bd641292f8dc22e, type: 3}
+  m_Name: PlayerConfig
+  m_EditorClassIdentifier: 
+  <PrefabsModel>k__BackingField:
+  - {fileID: 4024939540849637634, guid: e8a4cad5a4094b64ba1f7e54739f2378, type: 3}
+  - {fileID: 8675552701071084128, guid: 6dd210a16f2df3c49bda967a5ed5dc44, type: 3}
+  - {fileID: 1017591477398120971, guid: 0de05120fcb2b2a43828619bb56486df, type: 3}
+  - {fileID: 2639854446891986184, guid: 40b0b4211c524dc4bbb66ec29608f1c5, type: 3}
+  <Color>k__BackingField:
+  - {r: 1, g: 0.88037235, b: 0, a: 1}
+  - {r: 1, g: 0, b: 0.6190028, a: 1}
+  - {r: 0, g: 0.597173, b: 1, a: 1}
+  - {r: 0.2153039, g: 1, b: 0, a: 1}
+  <PrefabsUIpanel>k__BackingField: {fileID: 5879191635925972536, guid: ad53dd767ebd80e4aba8fc916cb9e33f,
+    type: 3}

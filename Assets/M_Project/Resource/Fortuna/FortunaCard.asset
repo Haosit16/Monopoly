@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d5acd27fbe85be4a8c8f72feea14e96, type: 3}
+  m_Name: FortunaCard
+  m_EditorClassIdentifier: 
+  headerCard: "\u0424\u043E\u0440\u0442\u0443\u043D\u0430"
+  nameCard: "\u041E\u0446\u0435 \u0442\u043E\u0431\u0456 \u043F\u043E\u0432\u0435\u0437\u043B\u043E "
+  money: 6666
