@@ -4,6 +4,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private UIManager uiManager;
+    [SerializeField] private ActionManager actionManager;
     [SerializeField] private Vector3 diceRollCameraPos;
 
     private DiceManager _diceManager;
@@ -12,12 +13,6 @@ public class GameManager : MonoBehaviour
     private int currentPlayerStep;
     public void Initialize(DiceManager diceManager, List<Player> players)
     {
-        if (players == null || players.Count == 0)
-        {
-            Debug.LogError("Помилка: список гравців порожній!");
-            return;
-        }
-
         _diceManager = diceManager;
         _players = players;
         currentPlayerStep = Random.Range(0, _players.Count);
@@ -26,16 +21,22 @@ public class GameManager : MonoBehaviour
     
     public void StartNewStepPlayer()
     {
+        foreach (Player p in _players)
+        {
+            p._playerPanelUI.SetActiveStepView(false);
+        }
+        _players[currentPlayerStep]._playerPanelUI.SetActiveStepView(true);
+
         uiManager.OpenDiceRollPanel(_players[currentPlayerStep].playerName);
-        Camera.main.GetComponent<CameraController>().RotateToDice(); 
+        Camera.main.GetComponent<CameraController>().RotateToDice();
+         
     }
-    private async void DiceRollForStep()
+    public async void DiceRollForStep()
     {
         uiManager.CloseDiceRollPanel();
-        //Debug.Log("Кидаємо кубики...");
-        int result = await _diceManager.GetNumber(); // Очікуємо, поки обидва кубики впадуть
-        
-        //Debug.Log($"Гравець кидає {result}");
+        int result = await _diceManager.GetNumber();
+
+        //Debug.Log($" {result}");
         _players[currentPlayerStep].MovePlayer(result, () => {
             currentPlayerStep++;
             if(currentPlayerStep>= _players.Count)
@@ -46,4 +47,19 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void OpenDiceRollLuckyThrowPanel()
+    {
+        uiManager.OpenDiceRollLuckyThrow(_players[currentPlayerStep].playerName);
+        Camera.main.GetComponent<CameraController>().RotateToDice();
+    }
+    public void StartDiceRollForLuckyThrow()
+    {
+        uiManager.CloseDiceRollLuckyThrow();
+        DiceRollForLuckyThrow();
+    }
+    private async void DiceRollForLuckyThrow()
+    {
+        int result = await _diceManager.GetNumber();
+        actionManager.ViewTotalPrize(result);
+    }
 }

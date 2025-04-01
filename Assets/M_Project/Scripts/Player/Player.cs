@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
     // Спеціальні картки
     //public List<Card> cards = new List<Card>();
     //public bool hasJailFreeCard = false;
-
+    
 
     public PlayerPanelUI _playerPanelUI;
 
@@ -43,6 +43,11 @@ public class Player : MonoBehaviour
     private Cell currentCel; // для зберігання клітинки на якій ми знаходимось
     private Animator animator;
     private Camera _camera;
+    private bool needSkipStep = false;
+    private ActionManager actionManager;
+
+    public bool NeedSkipStep { get { return needSkipStep; } }
+
 
     // Ініціалізація гравця
     public void Initialize(string name, int id, Color color, bool ai, CellManager boardManager, PlayerPanelUI playerPanelUI)
@@ -56,7 +61,7 @@ public class Player : MonoBehaviour
 
         _playerPanelUI = playerPanelUI;
         _playerPanelUI.Initialize(playerColor, playerName, money, capital);
-
+        actionManager = FindObjectOfType<ActionManager>();
         // Встановлюємо колір 
         if (playerToken != null)
         {
@@ -66,7 +71,17 @@ public class Player : MonoBehaviour
     }
     public void MovePlayer(int steps, Action OnEndMove)
     {
-        StartCoroutine(Move(steps, OnEndMove));
+        if (needSkipStep)
+        {
+            OnEndMove?.Invoke();
+            return;
+        }
+        else
+        {
+            StartCoroutine(Move(steps, OnEndMove));
+            return;
+        }
+        
     }
     public IEnumerator Move(int steps, Action OnEndMove)
     {
@@ -87,16 +102,9 @@ public class Player : MonoBehaviour
             Vector3 endPos = currentPath[nextPosition].transform.position;
 
             currentCel = currentPath[nextPosition];
-            int indexStart = currentPath.IndexOf(currentPath[nextPosition]);
-            // Перевірка, чи гравець пройшов СТАРТ
-            if (indexStart == 0 && isOnOuterPath) // Якщо пройшов через нульову позицію
-            {
-                if (currentPath[0].gameObject.TryGetComponent(out StartCell startCell))
-                {
-                    startCell.StartGoing(this); // Викликаємо логіку стартової клітинки
-                    Debug.Log($"Гравець {playerName} пройшов старт і отримав гроші!");
-                }
-            }
+
+            CheckStartPassed(currentPath, nextPosition);
+            CheckBonusPassed(currentPath, nextPosition);
 
             float time = 0;
             while (time < durationToCell)
@@ -118,10 +126,33 @@ public class Player : MonoBehaviour
         currentCel.Active(this);
         OnEndMove?.Invoke();
     }
-    public void Transition()
+    private void CheckStartPassed(List<Cell> currentPath, int nextPosition)
+    {
+        int indexStart = currentPath.IndexOf(currentPath[nextPosition]);
+        if (indexStart == 0 && isOnOuterPath) // Якщо пройшов через нульову позицію
+        {
+            if (currentPath[0].gameObject.TryGetComponent(out StartCell startCell))
+            {
+                startCell.StartGoing(this); // Викликаємо логіку стартової клітинки
+                Debug.Log($"Гравець {playerName} пройшов старт і отримав гроші!");
+            }
+        }
+    }
+    private void CheckBonusPassed(List<Cell> currentPath, int nextPosition)
+    {
+        if (!isOnOuterPath)
+        {
+            if (currentPath[nextPosition].gameObject.TryGetComponent(out Bonus bonus))
+            {
+                bonus.Passed(this);
+                Debug.Log($"Гравець {playerName} пройшов bonus і отримав гроші!");
+            }
+        }
+    }
+    public void Transition(Transition cell)
     {
         isOnOuterPath = !isOnOuterPath;
-
+        currentPosition = cell.linkedCell;
     }
     // Отримання грошей при проходженні через СТАРТ
     public void PassGo(int value)
@@ -161,4 +192,10 @@ public class Player : MonoBehaviour
         direction.y = 0;
         transform.rotation = Quaternion.LookRotation(direction);
     }
+    public void SkipStep()
+    { 
+        needSkipStep = true;
+        actionManager.EndStep();
+    }
+    public void ChangeSkipStep() => needSkipStep = false;
 }

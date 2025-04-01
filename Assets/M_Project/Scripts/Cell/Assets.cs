@@ -7,10 +7,11 @@ public class Assets : Cell
     public CellData cellData;
     [SerializeField] private GameObject ownerView;
     private Player owner;
-    private int countHouse;
-    private int countHotel;
+    private bool upgraded = false;
     private ActionManager actionManager;
     private float alpha = 0.5f;
+
+    public bool Upgraded { get { return upgraded; } }
 
     private void Start()
     {
@@ -37,7 +38,15 @@ public class Assets : Cell
             }
             else
             {
-                actionManager.EndStep();
+                if(upgraded || !cellData.canUpgrade)
+                {
+                    actionManager.EndStep();
+                }
+                else if(!upgraded && cellData.canUpgrade)
+                {
+                    
+                }
+
             }
         }
     }
@@ -54,15 +63,15 @@ public class Assets : Cell
         Material material = new Material(renderer.sharedMaterial);
         renderer.material = material;
     }
+    public void Upgrade()
+    {
+
+    }
     public int GetPayPrice()
     {
-        if(countHouse!=0)
+        if(upgraded)
         {
-            return cellData.priceToStep + cellData.priceHouse[countHouse];
-        }
-        else if(countHotel != 0)
-        {
-            return cellData.priceToStep + cellData.priceHotel;
+            return cellData.priceToStep + cellData.priceUpgradeToStep;
         }
         return cellData.priceToStep;
     }

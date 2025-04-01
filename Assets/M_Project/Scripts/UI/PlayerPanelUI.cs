@@ -8,20 +8,26 @@ public class PlayerPanelUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI nameView;
     [SerializeField] private TextMeshProUGUI moneyView;
     [SerializeField] private TextMeshProUGUI capitalView;
+    [SerializeField] private GameObject stepView;
 
     public void Initialize(Color color, string playerName, int money, int capital)
     {
         colorView.color = color;
         nameView.text = playerName;
-        moneyView.text = money.ToString();
-        capitalView.text = capital.ToString();
+        SetCapital(capital);
+        SetMoney(money);
+        SetActiveStepView(false);
     }
     public void SetMoney(int money)
     {
-        moneyView.text = money.ToString();
+        moneyView.text = money.ToString() + " грн";
     }
     public void SetCapital(int capital)
     {
-        capitalView.text = capital.ToString();
+        capitalView.text = "К " + capital.ToString() + " грн";
+    }
+    public void SetActiveStepView(bool value)
+    {
+        stepView.SetActive(value);
     }
 }

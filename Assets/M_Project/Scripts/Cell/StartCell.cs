@@ -17,7 +17,7 @@ public class StartCell : Cell
     }
     public void StartGoing(Player player)
     {
-        Debug.LogError(player.playerName + $"пройшов на старт. Старий баланс {player.money}");
+        Debug.LogError(player.playerName + $"пройшов старт. Старий баланс {player.money}");
         player.PassGo(moneyOfStart);
         Debug.LogError(player.playerName + $"Новий баланс {player.money}");
 

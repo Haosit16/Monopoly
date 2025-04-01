@@ -1,18 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
-public class LuckyThrow : MonoBehaviour
+public class LuckyThrow : Cell
 {
-    // Start is called before the first frame update
+    [SerializeField] private GameObject panel;
+    [SerializeField] private TextMeshProUGUI nameView;
+    private GameManager gameManager;
     void Start()
     {
-        
+        gameManager = FindObjectOfType<GameManager>();
     }
-
-    // Update is called once per frame
-    void Update()
+    public override void Active(Player player)
     {
-        
+        panel.SetActive(true);
+        nameView.text = player.playerName;
+        gameManager.OpenDiceRollLuckyThrowPanel();
     }
 }

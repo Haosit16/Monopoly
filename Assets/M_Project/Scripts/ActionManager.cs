@@ -23,6 +23,14 @@ public class ActionManager : MonoBehaviour
     [Header("Cards config")]
     [SerializeField] private Fond[] fondCards;
     [SerializeField] private FortunaCard[] fortunaCards;
+    [Header("LuckyAccident")]
+    [SerializeField] private GameObject panelPrizeView;
+    [SerializeField] private TextMeshProUGUI resultView;
+    [SerializeField] private Button LuckyEndStep;
+    [Header("Bonus")]
+    [SerializeField] private GameObject panelBonus;
+    [SerializeField] private TextMeshProUGUI bonusView;
+    [SerializeField] private Button bonusEndStep;
     [Header("Animation Settings")]
     [SerializeField] private float animationDuration = 1f;
     [SerializeField] private Ease animationEase = Ease.OutCubic;
@@ -38,6 +46,8 @@ public class ActionManager : MonoBehaviour
         pay.onClick.AddListener(Pay);
         endStep.onClick.AddListener(EndStep);
         cardEndStep.onClick.AddListener(EndStep);
+        LuckyEndStep.onClick.AddListener(EndStep);
+        bonusEndStep.onClick.AddListener(EndStep);
 
         actionPanel.SetActive(false);
         cardEndStep.gameObject.SetActive(false);
@@ -61,6 +71,10 @@ public class ActionManager : MonoBehaviour
         priceView.text = _cell.GetPayPrice().ToString();
 
     }
+    public void OpenUpgradeCell(Assets cell, Player player)
+    {
+
+    }
     public void OpenNoOwnre(Assets cell, Player player)
     {
         _player = player;
@@ -77,6 +91,7 @@ public class ActionManager : MonoBehaviour
     }
     private void Buy()
     {
+        int price = _cell.Upgraded ? _cell.cellData.price : _cell.cellData.priceUpgrade;
         if (_player.RemoveMoney(_cell.cellData.price))
         {
             _cell.ChangeOwner(_player);
@@ -136,10 +151,49 @@ public class ActionManager : MonoBehaviour
                 Debug.Log("Карта з'явилася!");
             });
     }
+    public void ViewTotalPrize(int randomNumber)
+    {
+        if (randomNumber >= 5 && randomNumber <= 9)
+        {
+            _player.AddMoney(50000);
+            panelPrizeView.gameObject.SetActive(true);
+            resultView.text = $"Ви виграли 50000";
+        }
+        else if (randomNumber == 3 || randomNumber == 4)
+        {
+            _player.AddMoney(100000);
+            panelPrizeView.gameObject.SetActive(true);
+            resultView.text = $"Ви виграли 100000";
+        }
+        else if (randomNumber == 10 || randomNumber == 11)
+        {
+            _player.AddMoney(100000);
+            panelPrizeView.gameObject.SetActive(true);
+            resultView.text = $"Ви виграли 100000";
+        }
+        else if (randomNumber == 2 || randomNumber == 12)
+        {
+            _player.AddMoney(200000);
+            panelPrizeView.gameObject.SetActive(true);
+            resultView.text = $"Ви виграли 200000";
+        }
+        else
+        {
+            panelPrizeView.gameObject.SetActive(true);
+            resultView.text = $"Ви виграли 0";
+        }
+    }
+    public void OpenBonusView(int moneyBonus)
+    {
+        panelBonus.SetActive(true);
+        bonusView.text = $"Ваш бонус {moneyBonus}";
+    }
     public void EndStep()
     {
         gameManager.StartNewStepPlayer();
         actionPanel.SetActive(false);
+        panelPrizeView.SetActive(false);
+        panelBonus.SetActive(false);
         cardRectTransform.anchoredPosition = new Vector2(-Screen.width, cardRectTransform.anchoredPosition.y);
 
     }

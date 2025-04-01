@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Transition : Cell
 {
+    public int linkedCell;
     public Transition whereToGoCell;
     private ActionManager actionManager;
     private void Start()
@@ -14,7 +15,7 @@ public class Transition : Cell
     {
         RemovePlayer(player);
         whereToGoCell.AddPlayer(player);
-        player.isOnOuterPath = !player.isOnOuterPath;
+        player.Transition(whereToGoCell);
         actionManager.EndStep();
     }
 }
