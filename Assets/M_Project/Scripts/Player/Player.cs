@@ -74,6 +74,8 @@ public class Player : MonoBehaviour
         if (needSkipStep)
         {
             OnEndMove?.Invoke();
+            actionManager.EndStep();
+            ChangeSkipStep();
             return;
         }
         else
@@ -117,7 +119,7 @@ public class Player : MonoBehaviour
             }
 
             transform.position = endPos;
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0);
         }
 
         animator.SetBool("Walk", false);

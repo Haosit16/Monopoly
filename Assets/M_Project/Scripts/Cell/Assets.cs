@@ -65,7 +65,7 @@ public class Assets : Cell
     }
     public void Upgrade()
     {
-
+        upgraded = true;
     }
     public int GetPayPrice()
     {

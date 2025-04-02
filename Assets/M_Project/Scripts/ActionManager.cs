@@ -15,6 +15,7 @@ public class ActionManager : MonoBehaviour
     [SerializeField] private Button buy, endStep, pay;
     [SerializeField] private TextMeshProUGUI cellView;
     [SerializeField] private TextMeshProUGUI priceView;
+    [SerializeField] private Button upgrade;
     [Header("Card")]
     [SerializeField] private TextMeshProUGUI textHeaderView;
     [SerializeField] private RectTransform cardRectTransform;
@@ -48,9 +49,14 @@ public class ActionManager : MonoBehaviour
         cardEndStep.onClick.AddListener(EndStep);
         LuckyEndStep.onClick.AddListener(EndStep);
         bonusEndStep.onClick.AddListener(EndStep);
+        upgrade.onClick.AddListener(Upgrade);
 
         actionPanel.SetActive(false);
         cardEndStep.gameObject.SetActive(false);
+        upgrade.gameObject.SetActive(false);
+        buy.gameObject.SetActive(false);
+        pay.gameObject.SetActive(false);
+        endStep.gameObject.SetActive(false);
 
         // ѕочаткове положенн€ за межами екрану
         cardRectTransform.anchoredPosition = new Vector2(-Screen.width, cardRectTransform.anchoredPosition.y);
@@ -63,8 +69,8 @@ public class ActionManager : MonoBehaviour
 
         actionPanel.SetActive(true);
         buy.gameObject.SetActive(false);
-        endStep.gameObject.SetActive(true);
         pay.gameObject.SetActive(true);
+        endStep.gameObject.SetActive(false);
 
         nameView.text = player.playerName;
         cellView.text = cell.cellData.CellName;
@@ -73,7 +79,16 @@ public class ActionManager : MonoBehaviour
     }
     public void OpenUpgradeCell(Assets cell, Player player)
     {
+        _player = player;
+        _cell = cell;
 
+        actionPanel.SetActive(true);
+        buy.gameObject.SetActive(false);
+        upgrade.gameObject.SetActive(true);
+
+        nameView.text = player.playerName;
+        cellView.text = cell.cellData.CellName;
+        priceView.text = _cell.GetPayPrice().ToString();
     }
     public void OpenNoOwnre(Assets cell, Player player)
     {
@@ -91,7 +106,6 @@ public class ActionManager : MonoBehaviour
     }
     private void Buy()
     {
-        int price = _cell.Upgraded ? _cell.cellData.price : _cell.cellData.priceUpgrade;
         if (_player.RemoveMoney(_cell.cellData.price))
         {
             _cell.ChangeOwner(_player);
@@ -105,6 +119,15 @@ public class ActionManager : MonoBehaviour
         if(_player.RemoveMoney(_cell.GetPayPrice()))
         {
             _playerOwner.AddMoney(_cell.GetPayPrice());
+            actionPanel.SetActive(false);
+            EndStep();
+        }
+    }
+    private void Upgrade()
+    {
+        if (_player.RemoveMoney(_cell.cellData.priceUpgrade))
+        {
+            _cell.Upgrade();
             actionPanel.SetActive(false);
             EndStep();
         }
