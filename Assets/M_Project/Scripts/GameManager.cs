@@ -17,6 +17,10 @@ public class GameManager : MonoBehaviour
         _players = players;
         currentPlayerStep = Random.Range(0, _players.Count);
         StartNewStepPlayer();
+        foreach (Player player in _players) 
+        {
+            player.OnGameOver += PlayerGameOver;
+        }
     }
     
     public void StartNewStepPlayer()
@@ -61,5 +65,11 @@ public class GameManager : MonoBehaviour
     {
         int result = await _diceManager.GetNumber();
         actionManager.ViewTotalPrize(result);
+    }
+    private void PlayerGameOver(Player player)
+    {
+        _players.Remove(player);
+        player.OnGameOver -= PlayerGameOver;
+        Destroy(player.gameObject);
     }
 }

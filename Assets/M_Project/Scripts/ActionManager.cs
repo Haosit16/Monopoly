@@ -12,7 +12,7 @@ public class ActionManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private GameObject actionPanel;
     [SerializeField] private TextMeshProUGUI nameView;
-    [SerializeField] private Button buy, endStep, pay;
+    [SerializeField] private Button buy, endStep, pay, bankrupt;
     [SerializeField] private TextMeshProUGUI cellView;
     [SerializeField] private TextMeshProUGUI priceView;
     [SerializeField] private Button upgrade;
@@ -54,6 +54,7 @@ public class ActionManager : MonoBehaviour
         LuckyEndStep.onClick.AddListener(EndStep);
         bonusEndStep.onClick.AddListener(EndStep);
         upgrade.onClick.AddListener(Upgrade);
+        bankrupt.onClick.AddListener(Bankrupt);
 
         pay10Price.onClick.AddListener(() => PayTax(false)); // pay 10%
         payFixPrice.onClick.AddListener(() => PayTax(true)); //pay 200000
@@ -137,6 +138,11 @@ public class ActionManager : MonoBehaviour
         {
             _cityAssetManager.UpdateCityUI(_player, true);
         }
+    }
+    public void OpenPayTax(Player player)
+    {
+        paneTax.SetActive(true);
+        _player = player;
     }
     private void PayTax(bool change)
     {
@@ -253,6 +259,10 @@ public class ActionManager : MonoBehaviour
     {
         panelBonus.SetActive(true);
         bonusView.text = $"Ваш бонус {moneyBonus}";
+    }
+    private void Bankrupt()
+    {
+        _player.OnBankrupt();
     }
     public void EndStep()
     {

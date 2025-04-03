@@ -7,6 +7,6 @@ public class TaxService : Cell
     }
     public override void Active(Player player)
     {
-        throw new System.NotImplementedException();
+        actionManager.OpenPayTax(player);
     }
 }

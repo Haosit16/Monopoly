@@ -75,4 +75,9 @@ public class Assets : Cell
         }
         return cellData.priceToStep;
     }
+    public void Sell()
+    {
+        ownerView.SetActive(false);
+        owner = null;
+    }
 }

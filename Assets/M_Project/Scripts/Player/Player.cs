@@ -7,6 +7,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Animator))]
 public class Player : MonoBehaviour
 {
+    public event Action<Player> OnGameOver;
     // Основні ідентифікатори гравця
     public string playerName;
     public int playerID;
@@ -211,4 +212,15 @@ public class Player : MonoBehaviour
         actionManager.EndStep();
     }
     public void ChangeSkipStep() => needSkipStep = false;
+    public void OnBankrupt()
+    {
+        OnGameOver?.Invoke(this);
+        foreach (var cell in ownedAssets) 
+        { 
+            SellAssets(cell);
+            cell.Sell();
+        }
+        Destroy(_playerPanelUI.gameObject);
+
+    }
 }
