@@ -32,6 +32,9 @@ public class ActionManager : MonoBehaviour
     [SerializeField] private GameObject panelBonus;
     [SerializeField] private TextMeshProUGUI bonusView;
     [SerializeField] private Button bonusEndStep;
+    [Header("Tax")]
+    [SerializeField] private GameObject paneTax;
+    [SerializeField] private Button pay10Price, payFixPrice;
     [Header("Animation Settings")]
     [SerializeField] private float animationDuration = 1f;
     [SerializeField] private Ease animationEase = Ease.OutCubic;
@@ -40,16 +43,20 @@ public class ActionManager : MonoBehaviour
     private Player _playerOwner;
     private Player _player;
     private Assets _cell;
+    private CityAssetManager _cityAssetManager;
 
     private void Start()
     {
         buy.onClick.AddListener(Buy);
-        pay.onClick.AddListener(Pay);
+        pay.onClick.AddListener(PayOwner);
         endStep.onClick.AddListener(EndStep);
         cardEndStep.onClick.AddListener(EndStep);
         LuckyEndStep.onClick.AddListener(EndStep);
         bonusEndStep.onClick.AddListener(EndStep);
         upgrade.onClick.AddListener(Upgrade);
+
+        pay10Price.onClick.AddListener(() => PayTax(false)); // pay 10%
+        payFixPrice.onClick.AddListener(() => PayTax(true)); //pay 200000
 
         actionPanel.SetActive(false);
         cardEndStep.gameObject.SetActive(false);
@@ -57,9 +64,12 @@ public class ActionManager : MonoBehaviour
         buy.gameObject.SetActive(false);
         pay.gameObject.SetActive(false);
         endStep.gameObject.SetActive(false);
+        paneTax.gameObject.SetActive(false);
 
         // ѕочаткове положенн€ за межами екрану
         cardRectTransform.anchoredPosition = new Vector2(-Screen.width, cardRectTransform.anchoredPosition.y);
+
+        _cityAssetManager = FindObjectOfType<CityAssetManager>();
     }
     public void OpenHasOwner(Assets cell, Player player, Player playerOwner)
     {
@@ -113,8 +123,9 @@ public class ActionManager : MonoBehaviour
             actionPanel.SetActive(false);
             EndStep();
         }
+        
     }
-    private void Pay()
+    private void PayOwner()
     {
         if(_player.RemoveMoney(_cell.GetPayPrice()))
         {
@@ -122,6 +133,38 @@ public class ActionManager : MonoBehaviour
             actionPanel.SetActive(false);
             EndStep();
         }
+        else
+        {
+            _cityAssetManager.UpdateCityUI(_player, true);
+        }
+    }
+    private void PayTax(bool change)
+    {
+        if (change == true)
+        {
+            if (_player.RemoveMoney(200000))
+            {
+
+                paneTax.SetActive(false);
+                EndStep();
+            }
+        }
+        else
+        {
+            int totalCapitalPrice = 0;
+            foreach(var capital in _player.ownedAssets)
+            {
+                totalCapitalPrice += capital.cellData.price;
+            }
+            totalCapitalPrice = (100 / totalCapitalPrice) * 10;
+            if (_player.RemoveMoney(totalCapitalPrice))
+            {
+
+                paneTax.SetActive(false);
+                EndStep();
+            }
+        }
+        
     }
     private void Upgrade()
     {

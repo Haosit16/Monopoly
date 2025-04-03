@@ -103,8 +103,6 @@ public class Player : MonoBehaviour
             Vector3 startPos = transform.position;
             Vector3 endPos = currentPath[nextPosition].transform.position;
 
-            currentCel = currentPath[nextPosition];
-
             CheckStartPassed(currentPath, nextPosition);
             CheckBonusPassed(currentPath, nextPosition);
 
@@ -121,6 +119,7 @@ public class Player : MonoBehaviour
             transform.position = endPos;
             yield return new WaitForSeconds(0);
         }
+        currentCel = currentPath[targetPosition];
 
         animator.SetBool("Walk", false);
         currentPosition = targetPosition;
@@ -150,6 +149,11 @@ public class Player : MonoBehaviour
                 Debug.Log($"ֳנאגוצü {playerName} ןנמירמג bonus ³ מענטלאג דנמר³!");
             }
         }
+    }
+    public void TransitionToStart()
+    {
+        isOnOuterPath = true;
+        currentPosition = 0;
     }
     public void Transition(Transition cell)
     {
@@ -187,6 +191,13 @@ public class Player : MonoBehaviour
         ownedAssets.Add(cell);
         capital += capitalAssets;
         _playerPanelUI.SetCapital(capital);
+    }
+    public void SellAssets(Assets assets)
+    {
+        AddMoney(assets.cellData.price);
+        capital -= assets.cellData.price;
+        _playerPanelUI.SetCapital(capital);
+        _playerPanelUI.SetMoney(assets.cellData.price);
     }
     private void RotateToCell(Vector3 cellPosition)
     {

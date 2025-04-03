@@ -12,7 +12,7 @@ public class ReturnToStart : Cell
     {
         RemovePlayer(player);
         startCell.AddPlayer(player);
-        player.isOnOuterPath = !player.isOnOuterPath; // change circle path
+        player.TransitionToStart();
         actionManager.EndStep();
     }
 }

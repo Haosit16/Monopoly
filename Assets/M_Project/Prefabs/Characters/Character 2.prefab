@@ -3236,7 +3236,7 @@ MonoBehaviour:
   playerID: 0
   playerColor: {r: 0, g: 0, b: 0, a: 0}
   isAI: 0
-  money: 999999
+  money: 300000
   capital: 0
   isBankrupt: 0
   playerToken: {fileID: 5028031851667712039}
